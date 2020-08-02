@@ -23,12 +23,24 @@ fluidPage(
                                 label="Select Year:",
                                 min=2015, max=2019,
                                 value=2019,
-                                sep="")
+                                sep=""),
+                            checkboxGroupInput(
+                                inputId="happiness_features",
+                                label="Select Data:",
+                                choices=list("GDP per Capita"="GDP.per.capita",
+                                             "Health/Life Expectancy"="Healthy.life.expectancy",
+                                             "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
+                                             "Generosity"="Generosity",
+                                             "Perception of Corruption" = 'Perceptions.of.corruption',
+                                             'Social Support' = 'Social.support'),
+                                selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
+                                )
                             ),
                      column(8,
                             plotlyOutput('worldmap'))
                  )
             )
     )
-                
 )
+
+# colnames(happiness)
