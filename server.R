@@ -3,35 +3,8 @@ function(input, output, session) {
   observeEvent(input$worldmap_year, {
     cat(input$worldmap_year)
   })
-  observeEvent(input$happiness_features, {
-    cat(input$happiness_features)
-  })
-  
-  observeEvent(input$worldmap_year, {
-    if (input$worldmap_year %in% c(2015,2016,2017)) {
-      updateCheckboxGroupInput(session, 'happiness_features',
-                               label="Select Data:",
-                               list("GDP per Capita"="GDP.per.capita",
-                                    "Health/Life Expectancy"="Healthy.life.expectancy",
-                                    "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
-                                    "Generosity"="Generosity",
-                                    "Perception of Corruption" = 'Perceptions.of.corruption',
-                                    'Family' = 'Family',
-                                    'Dystopia residual' = 'Dystopia.Residual'),
-                               selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Family','Dystopia.Residual')
-      )
-    } else {
-      updateCheckboxGroupInput(session, 'happiness_features',
-                               label="Select Data:",
-                               choices=list("GDP per Capita"="GDP.per.capita",
-                                            "Health/Life Expectancy"="Healthy.life.expectancy",
-                                            "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
-                                            "Generosity"="Generosity",
-                                            "Perception of Corruption" = 'Perceptions.of.corruption',
-                                            'Social Support' = 'Social.support'),
-                               selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
-      )
-    }
+  observeEvent(input$vae1, {
+    cat(input$var1)
   })
   
   react_data <- reactive({
@@ -58,16 +31,28 @@ function(input, output, session) {
           layout(title = 'Happiness Score' ,geo = g)
   })
   
-  map_top10 <- reactive({
-    react_data() %>%  
-      top_n(10) %>%
-      select(Country)
+  output$data_happiness = DT::renderDataTable({
+    react_data() %>%
+      select(-year, -code)
   })
   
-  output$data_happiness = DT::renderDataTable({
-    react_data()
-  })
+  output$scatter = renderPlotly(
+    happiness %>%
+      plot_ly(x= ~get(input$var1), 
+              y= ~get(input$var2),
+              color= ~continent,
+              text= ~paste("Country: ",Country),
+              type='scatter',
+              mode='markers'
+              ) %>%
+      layout(
+        title = paste(input$var1, 'vs', input$var2),
+        xaxis = list(title = input$var1),
+        yaxis = list(title = input$var2)
+      )
+  )
     
 }
 
-
+# happiness %>%
+#   plot_ly(x=~Score, y=~GDP.per.capita)

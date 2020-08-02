@@ -29,7 +29,8 @@ happiness_2015 = happiness_2015 %>%
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
     Freedom.to.make.life.choices = Freedom, 
-    Perceptions.of.corruption = Trust..Government.Corruption.
+    Perceptions.of.corruption = Trust..Government.Corruption.,
+    Social.support = Family
   )
 
 happiness_2016 = happiness_2016 %>%
@@ -39,7 +40,8 @@ happiness_2016 = happiness_2016 %>%
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
     Freedom.to.make.life.choices = Freedom, 
-    Perceptions.of.corruption = Trust..Government.Corruption.
+    Perceptions.of.corruption = Trust..Government.Corruption.,
+    Social.support = Family
   )
 
 happiness_2017 = happiness_2017 %>%
@@ -49,23 +51,27 @@ happiness_2017 = happiness_2017 %>%
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
     Freedom.to.make.life.choices = Freedom, 
-    Perceptions.of.corruption = Trust..Government.Corruption.
+    Perceptions.of.corruption = Trust..Government.Corruption.,
+    Social.support = Family
   )
 
+happiness_2018$Perceptions.of.corruption = as.numeric(happiness_2018$Perceptions.of.corruption)
 happiness_2018 = happiness_2018 %>%
   rename(
     rank = Overall.rank,
     Country = Country.or.region
-  )
+  )%>%
+  mutate(Dystopia.Residual = Score-rowSums(.[4:9], na.rm=TRUE))
 
 happiness_2019 = happiness_2019 %>%
   rename(
     rank = Overall.rank,
     Country = Country.or.region
-  )
+  ) %>%
+  mutate(Dystopia.Residual = Score-rowSums(.[4:9], na.rm=TRUE))
 
 # remove unnecessary columns
-happiness_2018$Perceptions.of.corruption = as.numeric(happiness_2018$Perceptions.of.corruption)
+  
 happiness_2017 = happiness_2017[-c(4,5)]
 happiness_2016 = happiness_2016[-c(2,5,6)]
 happiness_2015 = happiness_2015[-c(2,5)]
@@ -79,7 +85,7 @@ happiness$continent = countrycode(happiness$Country, origin = 'country.name', de
 happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c')
 
 # reorder columns in happiness dataframe
-column_order = c('year','continent','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Family","Dystopia.Residual" )
+column_order = c('year','continent','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
 happiness = happiness[,column_order]
 
 
@@ -90,3 +96,12 @@ l <- list(color = toRGB("grey"), width = 0.5)
 g <- list(showframe = FALSE,showcoastlines = FALSE,
           projection = list(type = 'Mercator'))
 
+
+scatter_choices = list("Happiness Score" = 'Score',
+                       "GDP per Capita"="GDP.per.capita",
+                       "Healthy Life Expectancy"="Healthy.life.expectancy",
+                       "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
+                       "Generosity"="Generosity",
+                       "Perception of Corruption" = 'Perceptions.of.corruption',
+                       'Social Support' = 'Social.support',
+                       'Dystopia residual' = 'Dystopia.Residual')

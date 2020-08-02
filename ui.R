@@ -25,12 +25,13 @@ fluidPage(
                                 inputId="happiness_features",
                                 label="Select Data:",
                                 choices=list("GDP per Capita"="GDP.per.capita",
-                                             "Health/Life Expectancy"="Healthy.life.expectancy",
+                                             "Healthy Life Expectancy"="Healthy.life.expectancy",
                                              "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
                                              "Generosity"="Generosity",
                                              "Perception of Corruption" = 'Perceptions.of.corruption',
-                                             'Social Support' = 'Social.support'),
-                                selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
+                                             'Social Support' = 'Social.support',
+                                             'Dystopia residual' = 'Dystopia.Residual'),
+                                selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support','Dystopia.Residual')
                                 )
                             ),
                      
@@ -38,10 +39,30 @@ fluidPage(
                             plotlyOutput('worldmap'))
                  ),
                  fluidRow(
-                     column(6,
-                            DT::dataTableOutput("data_happiness")
-                     )
+                     DT::dataTableOutput("data_happiness")
                  )
+            ),
+        
+        tabPanel("EXPLORE",icon = icon("poll"),
+                 tabPanel("VARIABLES",
+                          fluidRow(
+                              column(4,
+                                     selectizeInput(
+                                         inputId = "var1",
+                                         label = h5(strong("Select a variable:")),
+                                         choices = scatter_choices
+                                     ),
+                                     selectizeInput(
+                                         inputId = "var2",
+                                         label = h5(strong("Select a variable:")),
+                                         choices = scatter_choices
+                                     )
+                                ),
+                              column(8,
+                                     plotlyOutput('scatter'))
+                          
+                          ),
+                    )
             )
     )
 )
