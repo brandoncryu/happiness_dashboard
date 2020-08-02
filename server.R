@@ -33,15 +33,19 @@ function(input, output, session) {
       )
     }
   })
-
   
-  output$worldmap <- renderPlotly({
+  react_data <- reactive({
     map_happiness = happiness %>%
       select(c('year','Score','Country','code',input$happiness_features)) %>%
       filter(year == input$worldmap_year)
     
     map_happiness %>%
       mutate(Score = rowSums(.[5:length(map_happiness)], na.rm=TRUE)) %>%
+      arrange(desc(Score))
+  })
+  
+  output$worldmap <- renderPlotly({
+    react_data() %>%
       plot_geo() %>%
           add_trace(z = ~Score, 
                     color = ~Score,
@@ -52,6 +56,16 @@ function(input, output, session) {
           ) %>%
           colorbar(title = 'Score') %>%
           layout(title = 'Happiness Score' ,geo = g)
+  })
+  
+  map_top10 <- reactive({
+    react_data() %>%  
+      top_n(10) %>%
+      select(Country)
+  })
+  
+  output$data_happiness = DT::renderDataTable({
+    react_data()
   })
     
 }

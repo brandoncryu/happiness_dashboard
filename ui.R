@@ -8,13 +8,10 @@ fluidPage(
     navbarPage(
         title="Happiness Scores Around the World; 2014-2019",
         id="nav",
-        position="fixed-top",
+        position="static-top",
         collapsible=TRUE,
         
         tabPanel("WORLD MAP", icon=icon('globe'),
-                 br(),
-                 br(),
-                 br(),
                  fluidRow(
                      column(3,
                             br(),
@@ -36,8 +33,14 @@ fluidPage(
                                 selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
                                 )
                             ),
+                     
                      column(8,
                             plotlyOutput('worldmap'))
+                 ),
+                 fluidRow(
+                     column(6,
+                            DT::dataTableOutput("data_happiness")
+                     )
                  )
             )
     )
