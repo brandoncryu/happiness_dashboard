@@ -1,11 +1,13 @@
 function(input, output) {
 
     output$worldmap <- renderPlotly({
-        plot_geo(happiness_2019) %>%
+      happiness %>%
+        filter(year == input$worldmap_year) %>%
+        plot_geo() %>%
             add_trace(z = ~Score, 
                       color = ~Score,
                       colors = 'Greens', 
-                      text = ~Country.or.region, 
+                      text = ~Country, 
                       locations = ~code, 
                       marker = list(line = l)
             ) %>%
@@ -15,5 +17,3 @@ function(input, output) {
     })
 
 }
-
-

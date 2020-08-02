@@ -6,9 +6,83 @@ library(tidyverse)
 library(DT)
 library(countrycode)
 
+# import happiness csv by year
 happiness_2019 = read.csv("./data/happiness_2019.csv")
+happiness_2018 = read.csv("./data/happiness_2018.csv")
+happiness_2017 = read.csv("./data/happiness_2017.csv")
+happiness_2016 = read.csv("./data/happiness_2016.csv")
+happiness_2015 = read.csv("./data/happiness_2015.csv")
 
-happiness_2019$code = countrycode(happiness_2019$Country.or.region, origin='country.name',destination='iso3c')
+# add column year to each dataframe
+happiness_2019$year = 2019
+happiness_2018$year = 2018
+happiness_2017$year = 2017
+happiness_2016$year = 2016
+happiness_2015$year = 2015
+
+
+# rename columns to merge into 1 dataframe
+happiness_2015 = happiness_2015 %>%
+  rename(
+    rank = Happiness.Rank,
+    Score = Happiness.Score, 
+    GDP.per.capita = Economy..GDP.per.Capita.,
+    Healthy.life.expectancy = Health..Life.Expectancy.,
+    Freedom.to.make.life.choices = Freedom, 
+    Perceptions.of.corruption = Trust..Government.Corruption.
+  )
+
+happiness_2016 = happiness_2016 %>%
+  rename(
+    rank = Happiness.Rank,
+    Score = Happiness.Score, 
+    GDP.per.capita = Economy..GDP.per.Capita.,
+    Healthy.life.expectancy = Health..Life.Expectancy.,
+    Freedom.to.make.life.choices = Freedom, 
+    Perceptions.of.corruption = Trust..Government.Corruption.
+  )
+
+happiness_2017 = happiness_2017 %>%
+  rename(
+    rank = Happiness.Rank,
+    Score = Happiness.Score, 
+    GDP.per.capita = Economy..GDP.per.Capita.,
+    Healthy.life.expectancy = Health..Life.Expectancy.,
+    Freedom.to.make.life.choices = Freedom, 
+    Perceptions.of.corruption = Trust..Government.Corruption.
+  )
+
+happiness_2018 = happiness_2018 %>%
+  rename(
+    rank = Overall.rank,
+    Country = Country.or.region
+  )
+
+happiness_2019 = happiness_2019 %>%
+  rename(
+    rank = Overall.rank,
+    Country = Country.or.region
+  )
+
+# remove unnecessary columns
+happiness_2018$Perceptions.of.corruption = as.numeric(happiness_2018$Perceptions.of.corruption)
+happiness_2017 = happiness_2017[-c(4,5)]
+happiness_2016 = happiness_2016[-c(2,5,6)]
+happiness_2015 = happiness_2015[-c(2,5)]
+
+
+# bind rows of yearly datasets
+happiness = bind_rows(happiness_2015,happiness_2016,happiness_2017,happiness_2018,happiness_2019)
+
+# create continent and country code columns
+happiness$continent = countrycode(happiness$Country, origin = 'country.name', destination='continent')
+happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c')
+
+# reorder columns in happiness dataframe
+column_order = c('year','continent','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Family","Dystopia.Residual" )
+happiness = happiness[,column_order]
+
+
 
 # light grey boundaries
 l <- list(color = toRGB("grey"), width = 0.5)
