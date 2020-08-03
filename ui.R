@@ -96,7 +96,7 @@ fluidPage(
                                                  selectizeInput(
                                                      inputId = 'trend_variable',
                                                      label= 'Select variable:',
-                                                     choices = c('Score','rank'),
+                                                     choices = c('Score','Rank'),
                                                      selected = 'Score'
                                                  )
                                           ),

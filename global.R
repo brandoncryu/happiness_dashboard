@@ -24,7 +24,7 @@ happiness_2015$year = 2015
 # rename columns to merge into 1 dataframe
 happiness_2015 = happiness_2015 %>%
   rename(
-    rank = Happiness.Rank,
+    Rank = Happiness.Rank,
     Score = Happiness.Score, 
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
@@ -35,7 +35,7 @@ happiness_2015 = happiness_2015 %>%
 
 happiness_2016 = happiness_2016 %>%
   rename(
-    rank = Happiness.Rank,
+    Rank = Happiness.Rank,
     Score = Happiness.Score, 
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
@@ -46,7 +46,7 @@ happiness_2016 = happiness_2016 %>%
 
 happiness_2017 = happiness_2017 %>%
   rename(
-    rank = Happiness.Rank,
+    Rank = Happiness.Rank,
     Score = Happiness.Score, 
     GDP.per.capita = Economy..GDP.per.Capita.,
     Healthy.life.expectancy = Health..Life.Expectancy.,
@@ -58,14 +58,14 @@ happiness_2017 = happiness_2017 %>%
 happiness_2018$Perceptions.of.corruption = as.numeric(happiness_2018$Perceptions.of.corruption)
 happiness_2018 = happiness_2018 %>%
   rename(
-    rank = Overall.rank,
+    Rank = Overall.rank,
     Country = Country.or.region
   )%>%
   mutate(Dystopia.Residual = Score-rowSums(.[4:9], na.rm=TRUE))
 
 happiness_2019 = happiness_2019 %>%
   rename(
-    rank = Overall.rank,
+    Rank = Overall.rank,
     Country = Country.or.region
   ) %>%
   mutate(Dystopia.Residual = Score-rowSums(.[4:9], na.rm=TRUE))
@@ -85,7 +85,7 @@ happiness$region = countrycode(happiness$Country, origin = 'country.name', desti
 happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c', custom_match = c(Kosovo = "KSV"))
 
 # reorder columns in happiness dataframe
-column_order = c('year','region','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
+column_order = c('year','region','Country','code','Rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
 happiness = happiness[,column_order]
 
 
