@@ -1,7 +1,8 @@
 fluidPage(
     theme=shinytheme("lumen"),
     tags$head(
-        tags$style(HTML(".navbar .navbar-nav {float: right}
+        tags$style(HTML(".navbar .navbar-nav {float: right;
+        font-size:20px }
                         "))
     ),
     
