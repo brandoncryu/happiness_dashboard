@@ -1,16 +1,17 @@
 fluidPage(
-    theme=shinytheme("flatly"),
+    theme=shinytheme("lumen"),
     tags$head(
-        tags$style(HTML("
-          .navbar .navbar-header {float: right}
-        "))
+        tags$style(HTML(".navbar .navbar-nav {float: right}
+                        "))
     ),
+    
+    # Navigation bar that is always on the top of the screen
     navbarPage(
-        title="Happiness Scores Around the World; 2014-2019",
+        title="Happiness Scores Around the World: 2015-2019",
         id="nav",
         position="static-top",
-        collapsible=TRUE,
         
+        # World Map page
         tabPanel("WORLD MAP", icon=icon('globe'),
                  fluidRow(
                      column(3,
@@ -43,17 +44,21 @@ fluidPage(
                      )
                  ),
         
+        # Explore Page
         tabPanel("EXPLORE",icon = icon("poll"),
                  tabsetPanel(type='tabs', id='chart_tabs',
                              
+                             # Variables tab within Explore Page
                              tabPanel("VARIABLES",
                                       fluidRow(
+                                          br(),
                                           column(3,
-                                                 checkboxGroupInput(
+                                                 sliderInput(
                                                    inputId = 'variables_year',
                                                    label = 'Select Years:',
-                                                   choices = c(2015,2016,2017,2018,2019),
-                                                   selected = c(2015,2016,2017,2018,2019)
+                                                   min=2015, max=2019,
+                                                   value=c(2015,2019),
+                                                   sep=''
                                                    ),
                                                  selectizeInput(
                                                      inputId = "var1",
@@ -70,8 +75,11 @@ fluidPage(
                                                  plotlyOutput('scatter'))
                                           )
                                       ),
+                             
+                             # Trends tab within Explore Page
                              tabPanel("TRENDS",
                                       fluidRow(
+                                          br(),
                                           column(3,
                                                  selectizeInput(
                                                      inputId = "region",
@@ -97,8 +105,48 @@ fluidPage(
                                       )
                              
                              )
+                 ),
+        tabPanel("ABOUT ME",
+                 icon = icon('handshake'),
+                 fluidRow(
+                     br(),
+                     img(src = "brandon.png", width = "17%", style = "display: block; margin-left: auto; margin-right: auto;")
+                 ),
+                 fluidRow(
+                     h3(strong("Brandon Ryu"), style = "text-align: center"),
+                     h5("Brandon.C.Ryu@gmail.com", style = "text-align: center")
+                 ),
+                 fluidRow(
+                     tags$div(style = 'text-align: center',
+                         tags$a(
+                             href = 'https://www.linkedin.com/in/brandon-ryu-5002898a/',
+                             img(
+                                 src = 'LinkedIn.png',
+                                 title = "My LinkedIn",
+                                 height = "50px",
+                                 style = "display: inline-block; margin-left: auto; margin-right: auto;"
+                             )
+                         ),
+                         tags$a(
+                             href = 'https://github.com/brandoncryu/happiness_dashboard',
+                             img(
+                                 src = 'github.jpg',
+                                 title = "My Github",
+                                 height = "50px",
+                                 style = "display: inline-block; margin-left: auto; margin-right: auto;"
+                             )
+                         )
+                     )
+                 ),
+                 fluidRow(
+                     tags$div(style = 'text-align: center; width: 50%; margin-left: auto; margin-right: auto;',
+                              h4('Brandon is a passionate Data Scientist with a strong technical background and demonstrated experience in guiding healthcare products that improve patient care around the world. He is a strong interdisciplinary professional with a proven track record of collaborating with users, stakeholders and R&D to spearhead projects.'),
+                              h4('Brandon has previously worked as a Solutions Engineer at Epic Systems and Formulation Scientist at Fresenius Kabi.'),
+                              h4('He holds a B.S. in Chemical Engineering from Northwestern University.')
+                        )
+                     
                  )
+            
         )
+    )
 )
-
-# colnames(happiness)

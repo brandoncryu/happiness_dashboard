@@ -1,8 +1,7 @@
 function(input, output, session) {
   
-
-
-  
+  # World Map page
+  # Create reactive data frame to use for world map and data table
   react_data <- reactive({
     map_happiness = happiness %>%
       select(c('year','Score','Country','code',input$happiness_features)) %>%
@@ -13,6 +12,7 @@ function(input, output, session) {
       arrange(desc(Score))
   })
   
+  # Create output plot of world map
   output$worldmap <- renderPlotly({
     react_data() %>%
       plot_geo() %>%
@@ -27,12 +27,16 @@ function(input, output, session) {
           layout(title = 'Happiness Score' ,geo = g)
   })
   
+  # Create output data table from reactive data frame
   output$data_happiness = DT::renderDataTable({
     react_data() %>%
       select(-year, -code)
   })
   
   
+  
+  # Explore page -> VARIABLES tab
+  # Create reactive data frame for scatter plots
   happiness_scatter = reactive({
     happiness_scatter = happiness %>%
       filter(!is.na(get(input$var1)),
@@ -41,6 +45,7 @@ function(input, output, session) {
       )
   })
   
+  # Create output scatter plot 
   output$scatter = renderPlotly(
     happiness_scatter() %>%
       plot_ly(x= ~get(input$var1), 
@@ -60,6 +65,8 @@ function(input, output, session) {
       )
   )
   
+  # Explore page -> TREND tab
+  # Create output line graph for yearly trend
   output$trend = renderPlotly(
     happiness %>%
       filter(region == input$region,
@@ -79,6 +86,7 @@ function(input, output, session) {
       
   )
   
+  # Observe region input to adjust options for Country input
   observeEvent(input$region,
                updateSelectizeInput(session, 'region_country',
                                         choices = c(sort(unique(happiness$Country[happiness$region==input$region])))
