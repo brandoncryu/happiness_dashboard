@@ -81,11 +81,11 @@ happiness_2015 = happiness_2015[-c(2,5)]
 happiness = bind_rows(happiness_2015,happiness_2016,happiness_2017,happiness_2018,happiness_2019)
 
 # create continent and country code columns
-happiness$continent = countrycode(happiness$Country, origin = 'country.name', destination='continent')
-happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c')
+happiness$region = countrycode(happiness$Country, origin = 'country.name', destination='region')
+happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c', custom_match = c(Kosovo = "KSV"))
 
 # reorder columns in happiness dataframe
-column_order = c('year','continent','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
+column_order = c('year','region','Country','code','rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
 happiness = happiness[,column_order]
 
 

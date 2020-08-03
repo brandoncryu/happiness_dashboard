@@ -70,9 +70,30 @@ fluidPage(
                                                  plotlyOutput('scatter'))
                                           )
                                       ),
-                             tabPanel("TRENDS"
-                                      
-                                      
+                             tabPanel("TRENDS",
+                                      fluidRow(
+                                          column(3,
+                                                 selectizeInput(
+                                                     inputId = "region",
+                                                     label = h5(strong("Select a region:")),
+                                                     choices = unique(factor(happiness$region))
+                                                 ),
+                                                 selectizeInput(
+                                                     inputId="region_country",
+                                                     label="Select countries:",
+                                                     multiple = TRUE,
+                                                     choices = c('')
+                                                 ),
+                                                 selectizeInput(
+                                                     inputId = 'trend_variable',
+                                                     label= 'Select variable:',
+                                                     choices = c('Score','rank'),
+                                                     selected = 'Score'
+                                                 )
+                                          ),
+                                          column(9,
+                                                 plotlyOutput('trend'))
+                                        )
                                       )
                              
                              )
