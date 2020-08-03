@@ -37,34 +37,47 @@ fluidPage(
                      
                      column(8,
                             plotlyOutput('worldmap'))
-                 ),
+                     ),
                  fluidRow(
                      DT::dataTableOutput("data_happiness")
-                 )
-            ),
+                     )
+                 ),
         
         tabPanel("EXPLORE",icon = icon("poll"),
-                 tabPanel("VARIABLES",
-                          fluidRow(
-                              column(4,
-                                     selectizeInput(
-                                         inputId = "var1",
-                                         label = h5(strong("Select a variable:")),
-                                         choices = scatter_choices
-                                     ),
-                                     selectizeInput(
-                                         inputId = "var2",
-                                         label = h5(strong("Select a variable:")),
-                                         choices = scatter_choices
-                                     )
-                                ),
-                              column(8,
-                                     plotlyOutput('scatter'))
-                          
-                          ),
-                    )
-            )
-    )
+                 tabsetPanel(type='tabs', id='chart_tabs',
+                             
+                             tabPanel("VARIABLES",
+                                      fluidRow(
+                                          column(3,
+                                                 checkboxGroupInput(
+                                                   inputId = 'variables_year',
+                                                   label = 'Select Years:',
+                                                   choices = c(2015,2016,2017,2018,2019),
+                                                   selected = c(2015,2016,2017,2018,2019)
+                                                   ),
+                                                 selectizeInput(
+                                                     inputId = "var1",
+                                                     label = h5(strong("Select a variable for x-axis:")),
+                                                     choices = scatter_choices
+                                                     ),
+                                                 selectizeInput(
+                                                     inputId = "var2",
+                                                     label = h5(strong("Select a variable for y-axis:")),
+                                                     choices = scatter_choices
+                                                     )
+                                                 ),
+                                          column(9,
+                                                 plotlyOutput('scatter'))
+                                          )
+                                      ),
+                             tabPanel("TRENDS"
+                                      
+                                      
+                                      )
+                             
+                             )
+                 )
+        )
 )
 
 # colnames(happiness)

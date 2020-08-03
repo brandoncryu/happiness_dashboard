@@ -1,10 +1,7 @@
 function(input, output, session) {
   
-  observeEvent(input$worldmap_year, {
-    cat(input$worldmap_year)
-  })
-  observeEvent(input$vae1, {
-    cat(input$var1)
+  observeEvent(input$variables_year, {
+    cat(as.numeric(input$variables_year))
   })
   
   react_data <- reactive({
@@ -36,15 +33,27 @@ function(input, output, session) {
       select(-year, -code)
   })
   
+  
+  happiness_scatter = reactive({
+    happiness_scatter = happiness %>%
+      filter(!is.na(get(input$var1)),
+             !is.na(get(input$var2)),
+             year %in% as.numeric(input$variables_year)
+      )
+  })
+  
   output$scatter = renderPlotly(
-    happiness %>%
+    happiness_scatter() %>%
       plot_ly(x= ~get(input$var1), 
               y= ~get(input$var2),
               color= ~continent,
-              text= ~paste("Country: ",Country),
+              text= ~paste("Country: ",Country, "\nYear: ",year),
               type='scatter',
               mode='markers'
               ) %>%
+      add_trace(x= ~get(input$var1),
+                y=fitted(lm(get(input$var2)~get(input$var1), data=happiness_scatter())),
+                mode = "lines") %>%
       layout(
         title = paste(input$var1, 'vs', input$var2),
         xaxis = list(title = input$var1),
@@ -53,6 +62,3 @@ function(input, output, session) {
   )
     
 }
-
-# happiness %>%
-#   plot_ly(x=~Score, y=~GDP.per.capita)
