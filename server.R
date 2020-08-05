@@ -92,5 +92,15 @@ function(input, output, session) {
                                         choices = c(sort(unique(happiness$Country[happiness$region==input$region])))
                )
   )
+  
+  # Observe relationship of happiness scores and suicides
+  output$suicide = renderPlotly(
+    happiness_suicide %>%
+      plot_ly(
+        x= ~get(input$var3),
+        y= ~suicides.100k.pop,
+        type='scatter'
+      )
+  )
     
 }

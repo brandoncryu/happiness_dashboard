@@ -96,7 +96,7 @@ l <- list(color = toRGB("grey"), width = 0.5)
 g <- list(showframe = FALSE,showcoastlines = FALSE,
           projection = list(type = 'Mercator'))
 
-
+# Choices used for input
 scatter_choices = list("Happiness Score" = 'Score',
                        "GDP per Capita"="GDP.per.capita",
                        "Healthy Life Expectancy"="Healthy.life.expectancy",
@@ -105,3 +105,18 @@ scatter_choices = list("Happiness Score" = 'Score',
                        "Perception of Corruption" = 'Perceptions.of.corruption',
                        'Social Support' = 'Social.support',
                        'Dystopia residual' = 'Dystopia.Residual')
+
+
+# Merging suicide data frame
+suicide = read.csv("./data/suicide.csv")
+
+suicide = suicide %>%
+  mutate(code = countrycode(suicide$country, origin = 'country.name', destination='iso3c')) %>%
+  filter(year >=2015) %>%
+  select(code,year,suicides.100k.pop,gdp_per_capita....) %>%
+  group_by(code,year) %>%
+  summarise(suicides.100k.pop = sum(suicides.100k.pop),
+            gdp.per.capita = mean(gdp_per_capita....))
+
+happiness_suicide = happiness %>%
+  merge(suicide)

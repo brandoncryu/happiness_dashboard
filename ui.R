@@ -84,7 +84,7 @@ fluidPage(
                                           column(3,
                                                  selectizeInput(
                                                      inputId = "region",
-                                                     label = h5(strong("Select a region:")),
+                                                     label = "Select a region:",
                                                      choices = unique(factor(happiness$region))
                                                  ),
                                                  selectizeInput(
@@ -103,9 +103,27 @@ fluidPage(
                                           column(9,
                                                  plotlyOutput('trend'))
                                         )
+                                      ),
+                             # Explore suicide data with happiness dataset
+                             tabPanel("SUICIDE",
+                                      fluidRow(
+                                          br(),
+                                          column(3,
+                                                 selectizeInput(
+                                                     inputId = "var3",
+                                                     label = h5(strong("Select a variable for x-axis:")),
+                                                     choices = scatter_choices
+                                                 )
+                                            ),
+                                          column(9,
+                                                 plotlyOutput('suicide')
+                                            )
+                                          
                                       )
-                             
+                                 
                              )
+                             
+                        )
                  ),
         tabPanel("ABOUT ME",
                  icon = icon('handshake'),
