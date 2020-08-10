@@ -129,7 +129,9 @@ function(input, output, session) {
       plot_ly(
         x= ~get(input$var3),
         y= ~suicides.100k.pop,
-        type='scatter'
+        type='scatter',
+        color = ~region,
+        text = ~paste("Country: ",Country)
       ) %>%
       layout(
         title = paste(input$var3, 'vs Suicide Rates'),

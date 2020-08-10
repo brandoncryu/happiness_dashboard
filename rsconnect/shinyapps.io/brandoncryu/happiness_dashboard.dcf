@@ -1,0 +1,12 @@
+name: happiness_dashboard
+title: happiness_dashboard
+username:
+account: brandoncryu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2658267
+bundleId: 3498875
+url: https://brandoncryu.shinyapps.io/happiness_dashboard/
+when: 1597093462.59471
+asMultiple: FALSE
+asStatic: FALSE

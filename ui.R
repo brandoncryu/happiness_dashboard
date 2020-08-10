@@ -15,6 +15,13 @@ fluidPage(
         # World Map page
         tabPanel("WORLD MAP", icon=icon('globe'),
                  fluidRow(
+                     h3('Happiness Scores Around the World'),
+                     h4('Breakdown of each score measures how each criteria makes each country happier than Dystopia.'),
+                     br(),
+                     h4('Data is taken from:'),
+                     tags$a(href="https://worldhappiness.report", "World Happiness Report")
+                 ),
+                 fluidRow(
                      column(3,
                             br(),
                             sliderInput(
