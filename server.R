@@ -4,7 +4,7 @@ function(input, output, session) {
   # Create reactive data frame to use for world map and data table
   react_data <- reactive({
     map_happiness = happiness %>%
-      select(c('year','Score','Country','code',input$happiness_features)) %>%
+      select(c('year','Score','Country','code',input$happiness_features,'Dystopia.Residual')) %>%
       filter(year == input$worldmap_year)
     
     map_happiness %>%
@@ -57,20 +57,32 @@ function(input, output, session) {
               ) %>%
       add_trace(x= ~get(input$var1),
                 y=fitted(lm(get(input$var2)~get(input$var1), data=happiness_scatter())),
-                mode = "lines") %>%
+                color='',
+                mode = "lines",
+                name = 'Predicted') %>%
       layout(
         title = paste(input$var1, 'vs', input$var2),
         xaxis = list(title = input$var1),
         yaxis = list(title = input$var2)
       )
   )
+  # output for correlation
+
+  output$correlation = renderText({
+    x=happiness_scatter() %>%
+      select(input$var1)
+    y=happiness_scatter() %>%
+      select(input$var2)
+    corr = round(cor(x, y), digits = 5)
+    
+    paste('Correlation:',as.character(corr))
+  })
   
   # Explore page -> TREND tab
   # Create output line graph for yearly trend
   output$trend = renderPlotly(
     happiness %>%
-      filter(region == input$region,
-             Country %in% input$region_country) %>%
+      filter(Country %in% input$countries) %>%
       plot_ly(x=~year,
               y=~get(input$trend_variable), 
               color=~Country,
@@ -86,13 +98,12 @@ function(input, output, session) {
       
   )
   
-  # Observe region input to adjust options for Country input
-  observeEvent(input$region,
-               updateSelectizeInput(session, 'region_country',
-                                        choices = c(sort(unique(happiness$Country[happiness$region==input$region])))
-               )
-  )
-  
+  # Regional data table
+  output$regional_scores = DT::renderDataTable({
+    happiness_suicide %>%
+      group_by(get(input$region_or_continent)) %>%
+      summarise(Score = round(sum(Score*population)/sum(population),3))
+  })
   # Observe relationship of happiness scores and suicides
   output$suicide = renderPlotly(
     happiness_suicide %>%

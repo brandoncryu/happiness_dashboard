@@ -31,9 +31,8 @@ fluidPage(
                                              "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
                                              "Generosity"="Generosity",
                                              "Perception of Corruption" = 'Perceptions.of.corruption',
-                                             'Social Support' = 'Social.support',
-                                             'Dystopia residual' = 'Dystopia.Residual'),
-                                selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support','Dystopia.Residual')
+                                             'Social Support' = 'Social.support'),
+                                selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
                                 )
                             ),
                      
@@ -70,7 +69,8 @@ fluidPage(
                                                      inputId = "var2",
                                                      label = h5(strong("Select a variable for y-axis:")),
                                                      choices = scatter_choices
-                                                     )
+                                                     ),
+                                                 h4(strong(htmlOutput("correlation")))
                                                  ),
                                           column(9,
                                                  plotlyOutput('scatter'))
@@ -83,15 +83,10 @@ fluidPage(
                                           br(),
                                           column(3,
                                                  selectizeInput(
-                                                     inputId = "region",
-                                                     label = "Select a region:",
-                                                     choices = unique(factor(happiness$region))
-                                                 ),
-                                                 selectizeInput(
-                                                     inputId="region_country",
+                                                     inputId="countries",
                                                      label="Select countries:",
                                                      multiple = TRUE,
-                                                     choices = c('')
+                                                     choices = sort(unique(happiness$Country))
                                                  ),
                                                  selectizeInput(
                                                      inputId = 'trend_variable',
@@ -104,6 +99,23 @@ fluidPage(
                                                  plotlyOutput('trend'))
                                         )
                                       ),
+                             tabPanel("REGIONS",
+                                      fluidRow(
+                                          br(),
+                                          column(3,
+                                                 selectizeInput(
+                                                     inputId = "region_or_continent",
+                                                     label = h5(strong("Select Regions or Continents")),
+                                                     choices = c('region','continent')
+                                                 )
+                                          ),
+                                          column(9,
+                                                 DT::dataTableOutput("regional_scores")
+                                          )
+                                          
+                                      )
+                                      
+                             ),
                              # Explore suicide data with happiness dataset
                              tabPanel("SUICIDE",
                                       fluidRow(

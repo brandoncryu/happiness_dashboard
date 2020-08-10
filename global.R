@@ -83,9 +83,10 @@ happiness = bind_rows(happiness_2015,happiness_2016,happiness_2017,happiness_201
 # create continent and country code columns
 happiness$region = countrycode(happiness$Country, origin = 'country.name', destination='region')
 happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c', custom_match = c(Kosovo = "KSV"))
+happiness$continent = countrycode(happiness$Country, origin = 'country.name', destination='continent')
 
 # reorder columns in happiness dataframe
-column_order = c('year','region','Country','code','Rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
+column_order = c('year','region','continent','Country','code','Rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
 happiness = happiness[,column_order]
 
 
@@ -113,10 +114,29 @@ suicide = read.csv("./data/suicide.csv")
 suicide = suicide %>%
   mutate(code = countrycode(suicide$country, origin = 'country.name', destination='iso3c')) %>%
   filter(year >=2015) %>%
-  select(code,year,suicides.100k.pop,gdp_per_capita....) %>%
+  select(code,year,suicides.100k.pop,gdp_per_capita....,population) %>%
   group_by(code,year) %>%
   summarise(suicides.100k.pop = sum(suicides.100k.pop),
-            gdp.per.capita = mean(gdp_per_capita....))
+            gdp.per.capita = mean(gdp_per_capita....),
+            population = sum(population))
 
 happiness_suicide = happiness %>%
   merge(suicide)
+
+
+#
+happiness_suicide %>%
+  group_by(region) %>%
+  summarise(Score = sum(Score*population)/sum(population))
+
+test1 = happiness %>%
+  filter(year == 2015) %>%
+  select('Score','code','Country')
+
+test2 = happiness %>%
+  filter(year == 2019) %>%
+  select('Score','code','Country')
+
+merge(test1, test2, by='code') %>%
+  mutate(diff=Score.x-Score.y) %>%
+  arrange(desc(diff))
