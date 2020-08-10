@@ -82,6 +82,13 @@ fluidPage(
                                       fluidRow(
                                           br(),
                                           column(3,
+                                                 sliderInput(
+                                                     inputId = 'trends_variables_year',
+                                                     label = 'Select Years:',
+                                                     min=2015, max=2019,
+                                                     value=c(2015,2019),
+                                                     sep=''
+                                                 ),
                                                  selectizeInput(
                                                      inputId="countries",
                                                      label="Select countries:",
@@ -96,7 +103,11 @@ fluidPage(
                                                  )
                                           ),
                                           column(9,
-                                                 plotlyOutput('trend'))
+                                                 plotlyOutput('trend'),
+                                                 br(),
+                                                 h3(strong("Happiness Score Increase in Selected Time Range")),
+                                                 DT::dataTableOutput("trend_table")
+                                                 )
                                         )
                                       ),
                              tabPanel("REGIONS",
@@ -125,7 +136,8 @@ fluidPage(
                                                      inputId = "var3",
                                                      label = h5(strong("Select a variable for x-axis:")),
                                                      choices = scatter_choices
-                                                 )
+                                                 ),
+                                                 h4(strong(htmlOutput("suicide_correlation")))
                                             ),
                                           column(9,
                                                  plotlyOutput('suicide')

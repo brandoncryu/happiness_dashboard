@@ -66,8 +66,8 @@ function(input, output, session) {
         yaxis = list(title = input$var2)
       )
   )
+  
   # output for correlation
-
   output$correlation = renderText({
     x=happiness_scatter() %>%
       select(input$var1)
@@ -82,7 +82,8 @@ function(input, output, session) {
   # Create output line graph for yearly trend
   output$trend = renderPlotly(
     happiness %>%
-      filter(Country %in% input$countries) %>%
+      filter(Country %in% input$countries,
+             year %in% as.numeric(input$trends_variables_year)) %>%
       plot_ly(x=~year,
               y=~get(input$trend_variable), 
               color=~Country,
@@ -95,15 +96,33 @@ function(input, output, session) {
         xaxis = list(title = 'Year',
                      dtick=1)
       )
-      
   )
+  output$trend_table = DT::renderDataTable({
+    start = happiness %>%
+      filter(year == input$trends_variables_year[1]) %>%
+      select('Score','code','Country')
+    
+    end = happiness %>%
+      filter(year == tail(input$trends_variables_year,n=1)) %>%
+      select('Score','code','Country')
+    
+    merge(start, end, by='code') %>%
+      mutate(Increase=round(Score.y-Score.x,5)) %>%
+      select(Country.x,Increase) %>%
+      rename(Country = Country.x) %>%
+      arrange(desc(Increase))
+  })
   
   # Regional data table
   output$regional_scores = DT::renderDataTable({
     happiness_suicide %>%
-      group_by(get(input$region_or_continent)) %>%
-      summarise(Score = round(sum(Score*population)/sum(population),3))
+      group_by_(input$region_or_continent) %>%
+      summarise(Score = round(sum(Score*population)/sum(population),3)) %>%
+      arrange(desc(Score))
   })
+
+  
+  
   # Observe relationship of happiness scores and suicides
   output$suicide = renderPlotly(
     happiness_suicide %>%
@@ -111,7 +130,20 @@ function(input, output, session) {
         x= ~get(input$var3),
         y= ~suicides.100k.pop,
         type='scatter'
+      ) %>%
+      layout(
+        title = paste(input$var3, 'vs Suicide Rates'),
+        xaxis = list(title = input$var3)
       )
   )
+  # output for suicide correlation
+  output$suicide_correlation = renderText({
+    x=happiness_suicide %>%
+      select(input$var3)
+    y=happiness_suicide %>%
+      select(suicides.100k.pop)
+    corr = round(cor(x, y), digits = 5)
     
+    paste('Correlation:',as.character(corr))
+  })
 }
