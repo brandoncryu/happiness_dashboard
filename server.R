@@ -50,7 +50,7 @@ function(input, output, session) {
     happiness_scatter() %>%
       plot_ly(x= ~get(input$var1), 
               y= ~get(input$var2),
-              color= ~region,
+              color= ~continent,
               text= ~paste("Country: ",Country, "\nYear: ",year),
               type='scatter',
               mode='markers'
@@ -113,14 +113,41 @@ function(input, output, session) {
       arrange(desc(Increase))
   })
   
+  
   # Regional data table
   output$regional_scores = DT::renderDataTable({
-    happiness_suicide %>%
+    react_regional()
+  })
+  
+  # Regional bar chart
+  output$regional = renderPlotly({
+    react_regional() %>%
+      plot_ly(x= ~get(input$region_or_continent), 
+              y= ~Score,
+              type='bar'
+      )
+      # ) %>%
+      # layout(
+      #   title = paste('Scores by',input$region_or_continent),
+      #   xaxis = list(title = input$region_or_continent),
+      #   yaxis = list(title = 'Score')
+      # )
+  })
+  # Regional reactive
+  react_regional <- reactive({
+    regional_happiness = happiness_suicide %>%
+      select(c('year','Score','Country','sub_region','continent','population',input$regional_features,'Dystopia.Residual')) %>%
+      filter(year == input$regional_year)
+    
+    regional_aggregate = regional_happiness %>%
+      mutate(Score = rowSums(.[7:length(regional_happiness)], na.rm=TRUE))
+    
+    regional_aggregate %>%
       group_by_(input$region_or_continent) %>%
       summarise(Score = round(sum(Score*population)/sum(population),3)) %>%
       arrange(desc(Score))
   })
-
+  
   
   
   # Observe relationship of happiness scores and suicides
@@ -130,7 +157,7 @@ function(input, output, session) {
         x= ~get(input$var3),
         y= ~suicides.100k.pop,
         type='scatter',
-        color = ~region,
+        color = ~continent,
         text = ~paste("Country: ",Country)
       ) %>%
       layout(

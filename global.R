@@ -13,6 +13,8 @@ happiness_2017 = read.csv("./data/happiness_2017.csv")
 happiness_2016 = read.csv("./data/happiness_2016.csv")
 happiness_2015 = read.csv("./data/happiness_2015.csv")
 
+country_conversion = read.csv("./data/country_conversion.csv")
+
 # add column year to each dataframe
 happiness_2019$year = 2019
 happiness_2018$year = 2018
@@ -81,12 +83,15 @@ happiness_2015 = happiness_2015[-c(2,5)]
 happiness = bind_rows(happiness_2015,happiness_2016,happiness_2017,happiness_2018,happiness_2019)
 
 # create continent and country code columns
-happiness$region = countrycode(happiness$Country, origin = 'country.name', destination='region')
 happiness$code = countrycode(happiness$Country, origin='country.name',destination='iso3c', custom_match = c(Kosovo = "KSV"))
-happiness$continent = countrycode(happiness$Country, origin = 'country.name', destination='continent')
+country_conversion = country_conversion %>%
+  select(code_3,continent,sub_region)
+happiness = happiness %>%
+  left_join(country_conversion,by = c('code'='code_3'))
+  
 
 # reorder columns in happiness dataframe
-column_order = c('year','region','continent','Country','code','Rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
+column_order = c('year','sub_region','continent','Country','code','Rank','Score', 'GDP.per.capita', 'Healthy.life.expectancy' ,'Freedom.to.make.life.choices', 'Generosity', 'Perceptions.of.corruption','Social.support',"Dystopia.Residual" )
 happiness = happiness[,column_order]
 
 
@@ -125,18 +130,18 @@ happiness_suicide = happiness %>%
 
 
 #
-happiness_suicide %>%
-  group_by(region) %>%
-  summarise(Score = sum(Score*population)/sum(population))
-
-test1 = happiness %>%
-  filter(year == 2015) %>%
-  select('Score','code','Country')
-
-test2 = happiness %>%
-  filter(year == 2019) %>%
-  select('Score','code','Country')
-
-merge(test1, test2, by='code') %>%
-  mutate(diff=Score.x-Score.y) %>%
-  arrange(desc(diff))
+# happiness_suicide %>%
+#   group_by(sub_region) %>%
+#   summarise(Score = sum(Score*population)/sum(population))
+# 
+# test1 = happiness %>%
+#   filter(year == 2015) %>%
+#   select('Score','code','Country')
+# 
+# test2 = happiness %>%
+#   filter(year == 2019) %>%
+#   select('Score','code','Country')
+# 
+# merge(test1, test2, by='code') %>%
+#   mutate(diff=Score.x-Score.y) %>%
+#   arrange(desc(diff))

@@ -32,7 +32,7 @@ fluidPage(
                                 sep=""),
                             checkboxGroupInput(
                                 inputId="happiness_features",
-                                label="Select Data:",
+                                label="Select Criterias:",
                                 choices=list("GDP per Capita"="GDP.per.capita",
                                              "Healthy Life Expectancy"="Healthy.life.expectancy",
                                              "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
@@ -123,11 +123,30 @@ fluidPage(
                                           column(3,
                                                  selectizeInput(
                                                      inputId = "region_or_continent",
-                                                     label = h5(strong("Select Regions or Continents")),
-                                                     choices = c('region','continent')
+                                                     label = h5(strong("Select Sub Region or Continent")),
+                                                     choices = c('sub_region','continent')
+                                                 ),
+                                                 sliderInput(
+                                                     inputId = 'regional_year',
+                                                     label = 'Select Years:',
+                                                     min=2015, max=2019,
+                                                     value=c(2015,2019),
+                                                     sep=''
+                                                 ),
+                                                 checkboxGroupInput(
+                                                     inputId="regional_features",
+                                                     label="Select Criterias:",
+                                                     choices=list("GDP per Capita"="GDP.per.capita",
+                                                                  "Healthy Life Expectancy"="Healthy.life.expectancy",
+                                                                  "Freedom to Make Life Choices"="Freedom.to.make.life.choices",
+                                                                  "Generosity"="Generosity",
+                                                                  "Perception of Corruption" = 'Perceptions.of.corruption',
+                                                                  'Social Support' = 'Social.support'),
+                                                     selected = c('GDP.per.capita','Healthy.life.expectancy','Freedom.to.make.life.choices','Generosity','Perceptions.of.corruption','Social.support')
                                                  )
                                           ),
                                           column(9,
+                                                 plotlyOutput('regional'),
                                                  DT::dataTableOutput("regional_scores")
                                           )
                                           
